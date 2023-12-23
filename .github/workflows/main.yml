@@ -67,6 +67,9 @@ jobs:
           CCACHE_COMPILERCHECK: "string:${{ env.NDK_VERSION }}"
         run: ./gradlew assemble
 
+      - name: list files
+        run: ls app/build/outputs/apk/full/release/
+
       - name: Rename APKs (Signed)
         if: env.IS_BUILD_SIGNED == 'true' && env.UPLOAD_ARTIFACTS == 'true'
         run: mv app/build/outputs/apk/full/release/app-release-unsigned.apk zelda-$GITHUB_RUN_NUMBER-release.apk
