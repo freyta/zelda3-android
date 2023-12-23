@@ -68,7 +68,7 @@ jobs:
         run: ./gradlew assemble
 
       - name: list files
-        run: ls app/build/outputs/apk/full/release/
+        run: ls . && ls ./app/build/outputs/apk/full/release/
 
       - name: Rename APKs (Signed)
         if: env.IS_BUILD_SIGNED == 'true' && env.UPLOAD_ARTIFACTS == 'true'
