@@ -1,0 +1,107 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled]
+
+jobs:
+  build:
+    # Skip 'labeled' events that didn't add the 'ci' label
+    if: |
+      github.event_name != 'pull_request' ||
+      github.event.action != 'labeled' ||
+      github.event.label.name == 'ci'
+    runs-on: ubuntu-latest
+    env:
+      JVM_OPTS: -Xmx6G
+      IS_BUILD_SIGNED: ${{ secrets.KEYSTORE != '' }}
+      UPLOAD_ARTIFACTS: ${{ github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'ci') }}
+
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Restore CCache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          max-size: 3Gi
+
+      - name: Restore Gradle Cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.gradle/
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/build.gradle') }}-${{ hashFiles('app/**/*.xml') }}-${{ hashFiles('app/**.kt', 'app/**.java') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-${{ hashFiles('**/build.gradle') }}-${{ hashFiles('app/**/*.xml') }}-
+            ${{ runner.os }}-gradle-${{ hashFiles('**/build.gradle') }}-
+            ${{ runner.os }}-gradle-
+
+      - name: Install Ninja Build
+        run: |
+          sudo apt-get install -y ninja-build
+          ln -s /usr/bin/ninja .
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v2
+      
+      - name: Install NDK
+        run: sdkmanager "ndk;26.1.10909125"
+        
+      - name: Decode Keystore
+        if: env.IS_BUILD_SIGNED == 'true'
+        env:
+          KEYSTORE_ENCODED: ${{ secrets.KEYSTORE }}
+        run: echo $KEYSTORE_ENCODED | base64 --decode > "/home/runner/keystore.jks"
+
+      - name: Android Assemble
+        env:
+          SIGNING_STORE_PATH: "/home/runner/keystore.jks"
+          SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
+          SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+          CMAKE_C_COMPILER_LAUNCHER: "ccache"
+          CMAKE_CXX_COMPILER_LAUNCHER: "ccache"
+          CCACHE_COMPILERCHECK: "string:${{ env.NDK_VERSION }}"
+        run: ./gradlew --stacktrace --configuration-cache --build-cache --parallel --configure-on-demand assemble
+
+      - name: Rename APKs (Signed)
+        if: env.IS_BUILD_SIGNED == 'true' && env.UPLOAD_ARTIFACTS == 'true'
+        run: mv app/build/outputs/apk/full/release/app-release-unsigned.apk zelda-$GITHUB_RUN_NUMBER-release.apk
+
+      - name: Upload Signed Debug APK
+        if: env.IS_BUILD_SIGNED == 'true' && env.UPLOAD_ARTIFACTS == 'true'
+        uses: actions/upload-artifact@v3
+        with:
+          name: zelda-${{ github.run_number }}-reldebug.apk
+          path: zelda-${{ github.run_number }}-reldebug.apk
+
+      - name: Upload Signed Release APK
+        if: env.IS_BUILD_SIGNED == 'true' && env.UPLOAD_ARTIFACTS == 'true'
+        uses: actions/upload-artifact@v3
+        with:
+          name: zelda-${{ github.run_number }}-release.apk
+          path: zelda-${{ github.run_number }}-release.apk
+
+      - name: Rename APKs (Unsigned)
+        if: env.IS_BUILD_SIGNED == 'false' && env.UPLOAD_ARTIFACTS == 'true'
+        run: |
+          mv app/build/outputs/apk/full/reldebug/app-full-reldebug.apk zelda-$GITHUB_RUN_NUMBER-unsigned-reldebug.apk
+          mv app/build/outputs/apk/full/release/app-release-unsigned.apk zelda-$GITHUB_RUN_NUMBER-unsigned-release.apk
+
+      - name: Upload Unsigned Debug APK
+        if: env.IS_BUILD_SIGNED == 'false' && env.UPLOAD_ARTIFACTS == 'true'
+        uses: actions/upload-artifact@v3
+        with:
+          name: zelda-${{ github.run_number }}-unsigned-reldebug.apk
+          path: zelda-${{ github.run_number }}-unsigned-reldebug.apk
+
+      - name: Upload Unsigned Release APK
+        if: env.IS_BUILD_SIGNED == 'false' && env.UPLOAD_ARTIFACTS == 'true'
+        uses: actions/upload-artifact@v3
+        with:
+          name: zelda-${{ github.run_number }}-unsigned-release.apk
+          path: zelda-${{ github.run_number }}-unsigned-release.apk
+          
