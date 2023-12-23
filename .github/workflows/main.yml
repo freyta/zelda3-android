@@ -72,14 +72,14 @@ jobs:
 
       - name: Rename APKs (Signed)
         if: env.IS_BUILD_SIGNED == 'true' && env.UPLOAD_ARTIFACTS == 'true'
-        run: mv app/build/outputs/apk/full/release/app-release-unsigned.apk zelda-$GITHUB_RUN_NUMBER-release.apk
+        run: mv app/build/outputs/apk/release/app-release-unsigned.apk zelda-$GITHUB_RUN_NUMBER-release.apk
 
       - name: Upload Signed Debug APK
         if: env.IS_BUILD_SIGNED == 'true' && env.UPLOAD_ARTIFACTS == 'true'
         uses: actions/upload-artifact@v3
         with:
-          name: zelda-${{ github.run_number }}-reldebug.apk
-          path: zelda-${{ github.run_number }}-reldebug.apk
+          name: zelda-${{ github.run_number }}-debug.apk
+          path: zelda-${{ github.run_number }}-debug.apk
 
       - name: Upload Signed Release APK
         if: env.IS_BUILD_SIGNED == 'true' && env.UPLOAD_ARTIFACTS == 'true'
@@ -91,15 +91,15 @@ jobs:
       - name: Rename APKs (Unsigned)
         if: env.IS_BUILD_SIGNED == 'false' && env.UPLOAD_ARTIFACTS == 'true'
         run: |
-          mv app/build/outputs/apk/full/reldebug/app-full-reldebug.apk zelda-$GITHUB_RUN_NUMBER-unsigned-reldebug.apk
-          mv app/build/outputs/apk/full/release/app-release-unsigned.apk zelda-$GITHUB_RUN_NUMBER-unsigned-release.apk
+          mv app/build/outputs/apk/debug/app-debug.apk zelda-$GITHUB_RUN_NUMBER-unsigned-debug.apk
+          mv app/build/outputs/apk/release/app-release-unsigned.apk zelda-$GITHUB_RUN_NUMBER-unsigned-release.apk
 
       - name: Upload Unsigned Debug APK
         if: env.IS_BUILD_SIGNED == 'false' && env.UPLOAD_ARTIFACTS == 'true'
         uses: actions/upload-artifact@v3
         with:
-          name: zelda-${{ github.run_number }}-unsigned-reldebug.apk
-          path: zelda-${{ github.run_number }}-unsigned-reldebug.apk
+          name: zelda-${{ github.run_number }}-unsigned-debug.apk
+          path: zelda-${{ github.run_number }}-unsigned-debug.apk
 
       - name: Upload Unsigned Release APK
         if: env.IS_BUILD_SIGNED == 'false' && env.UPLOAD_ARTIFACTS == 'true'
