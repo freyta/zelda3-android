@@ -88,12 +88,10 @@ jobs:
 
 
       - name: Rename APKs (Signed)
-        if: env.IS_BUILD_SIGNED == 'true'
         run: mv app/build/outputs/apk/release/app-release-unsigned-signed.apk zelda-$GITHUB_RUN_NUMBER-release.apk
 
 
       - name: Upload Signed Release APK
-        if: env.IS_BUILD_SIGNED == 'true'
         uses: actions/upload-artifact@v3
         with:
           name: zelda-${{ github.run_number }}-release.apk
