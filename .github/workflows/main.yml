@@ -100,11 +100,9 @@ jobs:
           path: zelda-${{ github.run_number }}-release.apk
 
           
-       - name: Create release
-         uses: softprops/action-gh-release@v1
+       - name: Release
+         uses: ncipollo/release-action@v1.10.0
          with:
-           token: ${{ secrets.GITHUB_TOKEN }}
-           tag_name: v1
-           name: Version 2
-           draft: true
-           prerelease: false
+           artifacts: zelda-${{ github.run_number }}-release.apk
+           tag: "hello"
+           body: nothing exciting
