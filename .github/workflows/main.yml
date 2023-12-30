@@ -90,7 +90,7 @@ jobs:
       - name: Rename APKs (Signed)
         run: mv app/build/outputs/apk/release/app-release-unsigned-signed.apk zelda-$GITHUB_RUN_NUMBER-release.apk
 
-     - name: LS folder APKs (Signed)
+      - name: LS folder APKs (Signed)
         run: ls . 
 
       - name: Upload Signed Release APK
