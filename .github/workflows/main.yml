@@ -99,10 +99,10 @@ jobs:
           name: zelda-${{ github.run_number }}-release.apk
           path: zelda-${{ github.run_number }}-release.apk
 
-          
-       - name: Release
-         uses: ncipollo/release-action@v1.10.0
-         with:
+
+      - name: Release
+        uses: ncipollo/release-action@v1.10.0
+        with:
            artifacts: zelda-${{ github.run_number }}-release.apk
            tag: "hello"
            body: nothing exciting
