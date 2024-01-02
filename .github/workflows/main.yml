@@ -2,8 +2,11 @@ name: CI
 
 on:
   push:
-  pull_request:
-    types: [opened, synchronize, reopened, labeled]
+    branches:
+      - master
+    paths-ignore:
+      - '**/.github/workflows/test.yml'
+
 
 jobs:
   build:
