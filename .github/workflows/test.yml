@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled]
+
+jobs:
+  build:
+    # Skip 'labeled' events that didn't add the 'ci' label
+    if: |
+      github.event_name != 'pull_request' ||
+      github.event.action != 'labeled' ||
+      github.event.label.name == 'ci'
+    runs-on: ubuntu-latest
+    env:
+      JVM_OPTS: -Xmx6G
+      IS_BUILD_SIGNED: ${{ secrets.KEYSTORE != '' }}
+      UPLOAD_ARTIFACTS: ${{ github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'ci') }}
+
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Restore CCache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          max-size: 3Gi
+
+      - name: Restore Gradle Cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.gradle/
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/build.gradle') }}-${{ hashFiles('app/**/*.xml') }}-${{ hashFiles('app/**.kt', 'app/**.java') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-${{ hashFiles('**/build.gradle') }}-${{ hashFiles('app/**/*.xml') }}-
+            ${{ runner.os }}-gradle-${{ hashFiles('**/build.gradle') }}-
+            ${{ runner.os }}-gradle-
+
+      - name: Install Ninja Build
+        run: |
+          sudo apt-get install -y ninja-build
+          ln -s /usr/bin/ninja .
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v2
+
+      - name: Print Gradle information
+        run: ./gradlew --version
