@@ -35,6 +35,7 @@ android {
         versionName "1.0.1"
         externalNativeBuild {
             ndkBuild {
+                android.useAndroidX=true  
                 arguments "APP_PLATFORM=android-23"
                 ndkVersion = "26.1.10909125"
                 abiFilters 'arm64-v8a'
