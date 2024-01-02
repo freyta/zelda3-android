@@ -49,3 +49,7 @@ jobs:
 
       - name: Print Gradle information
         run: ./gradlew --version
+
+
+      - name: Assemble the gradle
+        run: ./gradlew assemble
