@@ -5,7 +5,7 @@ on:
     branches:
       - master
     paths-ignore:
-      - '**/.github/workflows/test.yml'
+      - '.github/workflows/test.yml'
 
 
 jobs:
