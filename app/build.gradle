@@ -29,12 +29,13 @@ android {
         if (buildAsApplication) {
             applicationId "com.dishii.zelda3"
         }
-        minSdkVersion 16
+        minSdkVersion 23
         targetSdkVersion 31
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.1"
         externalNativeBuild {
             ndkBuild {
+                arguments "APP_PLATFORM=android-23"
                 ndkVersion = "26.1.10909125"
                 abiFilters 'arm64-v8a'
             }
@@ -83,4 +84,5 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'androidx.core:core:1.7.0' // Use the latest version
 }
