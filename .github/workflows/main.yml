@@ -109,4 +109,4 @@ jobs:
         with:
            artifacts: zelda-${{ github.run_number }}-release.apk
            tag: ${{ github.sha }}
-           body: ${{ GITHUB_SHA }}
+           body: ${{ github.event.pull_request.head.sha }}
