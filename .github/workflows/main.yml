@@ -3,7 +3,7 @@ name: Compile APK
 on:
   push:
     branches:
-      - master
+      - main
     paths-ignore:
       - '.github/workflows/test.yml'
   workflow_dispatch:
