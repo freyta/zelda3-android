@@ -36,7 +36,9 @@ jobs:
       - name: Restore Gradle Cache
         uses: actions/cache@v3
         with:
-          path: ~/.gradle/
+          path: |
+              ~/.gradle/
+              ~/app/jni/*
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/build.gradle') }}-${{ hashFiles('app/**/*.xml') }}-${{ hashFiles('app/**.kt', 'app/**.java') }}
           restore-keys: |
             ${{ runner.os }}-gradle-${{ hashFiles('**/build.gradle') }}-${{ hashFiles('app/**/*.xml') }}-
