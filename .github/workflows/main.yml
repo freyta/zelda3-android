@@ -74,7 +74,7 @@ jobs:
           CMAKE_C_COMPILER_LAUNCHER: "ccache"
           CMAKE_CXX_COMPILER_LAUNCHER: "ccache"
           CCACHE_COMPILERCHECK: "string:${{ env.NDK_VERSION }}"
-        run: ./gradlew assemble
+        run: ./gradlew assemble --status
       
       - uses: r0adkll/sign-android-release@v1
         name: Sign app APK
