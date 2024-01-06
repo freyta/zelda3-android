@@ -23,6 +23,9 @@ jobs:
       UPLOAD_ARTIFACTS: ${{ github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'ci') }}
 
     steps:
+      - name: Set current date as env variable
+        run: echo "NOW=$(date +'%Y-%m-%dT%H:%M:%S')" >> $GITHUB_ENV
+
       - name: Git Checkout
         uses: actions/checkout@v3
         with:
@@ -110,6 +113,6 @@ jobs:
         uses: ncipollo/release-action@v1.10.0
         with:
            artifacts: zelda-${{ github.run_number }}-release.apk
-           tag: nightly-release
+           tag: nightly-release-$NOW
            name: 'Nightly Build'
            body: 'The currently Nightly Build. Whenever new changes are pushed, you can find the latest build here. You can keep this installation alongside your main one.'
