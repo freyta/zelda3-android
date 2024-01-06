@@ -108,5 +108,5 @@ jobs:
         uses: ncipollo/release-action@v1.10.0
         with:
            artifacts: zelda-${{ github.run_number }}-release.apk
-           tag: $GITHUB_REF_NAME
-           body: $GITHUB_SHA
+           tag: ${{ github.sha }}
+           body: ${{ GITHUB_SHA }}
