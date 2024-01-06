@@ -108,5 +108,6 @@ jobs:
         uses: ncipollo/release-action@v1.10.0
         with:
            artifacts: zelda-${{ github.run_number }}-release.apk
-           tag: ${{ github.sha }}
-           body: ${{ github.event.pull_request.head.sha }}
+           tag: nightly-release
+           name: 'Nightly Build'
+           body: 'The currently Nightly Build. Whenever new changes are pushed, you can find the latest build here. You can keep this installation alongside your main one.'
