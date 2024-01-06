@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       JVM_OPTS: -Xmx6G
-      IS_BUILD_SIGNED: ${{ secrets.KEYSTORE != '' }}
+      IS_BUILD_SIGNED: ${{ secrets.KEYSTOREPASSWORD != '' }}
       UPLOAD_ARTIFACTS: ${{ github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'ci') }}
 
     steps:
