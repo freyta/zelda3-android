@@ -22,7 +22,7 @@ jobs:
       IS_BUILD_SIGNED: ${{ secrets.KEYSTOREPASSWORD != '' }}
       UPLOAD_ARTIFACTS: ${{ github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'ci') }}
       # NOW: $(date +'%Y%m%d.%H%M%S')
-      NOW: "123"
+      NOW: "1234"
 
     steps:
       - name: Git Checkout
@@ -113,7 +113,7 @@ jobs:
 
 
       - name: Release
-        uses: ncipollo/release-action@v1.10.0
+        uses: ncipollo/release-action@v1.13.0
         with:
            artifacts: zelda-${{ github.run_number }}-release.apk
            tag: nightly-release-${{ env.NOW }}
