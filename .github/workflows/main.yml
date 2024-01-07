@@ -24,7 +24,8 @@ jobs:
 
     steps:
       - name: Set current date as env variable
-        run:  echo "::set-env name=NOW::$(date +'%Y%m%d.%H%M%S')"
+        run:  echo "NOW=$(date +'%Y%m%d.%H%M%S')" >> $GITHUB_ENV
+
 
       - name: Git Checkout
         uses: actions/checkout@v3
