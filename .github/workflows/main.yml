@@ -21,7 +21,8 @@ jobs:
       JVM_OPTS: -Xmx6G
       IS_BUILD_SIGNED: ${{ secrets.KEYSTOREPASSWORD != '' }}
       UPLOAD_ARTIFACTS: ${{ github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'ci') }}
-      NOW: $(date +'%Y%m%d.%H%M%S')
+      # NOW: $(date +'%Y%m%d.%H%M%S')
+      NOW: "123"
 
     steps:
       - name: Git Checkout
